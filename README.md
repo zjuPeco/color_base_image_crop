@@ -84,5 +84,5 @@ You can also specify the output size just like it does while cropping a video.
 
 ### To do
 
-- [ ] Improve the accuracy of auto detecting padding color.
+- [x] Improve the accuracy of auto detecting padding color.
 - [ ] Refer to more frames while cutting a video.

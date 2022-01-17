@@ -1,6 +1,7 @@
 import os
 import json
 import argparse
+from collections import Counter
 
 import cv2
 import numpy as np
@@ -23,6 +24,8 @@ def parser():
                         help='padding color')
     parser.add_argument('--color', type=str, default=os.path.join(file_dir, '../data/color.json'),
                         help='path of color.json')
+    parser.add_argument('--block_size', type=int, default=10,
+                        help='block size for detecting background color')
     args = parser.parse_args()
     return args
 
@@ -123,20 +126,30 @@ def get_edge_color(args, img_arr):
     with open(args.color, 'r') as f:
         color_ranges = json.load(f)
     edge_color = args.edge_color
+    block_size = args.block_size
     if edge_color == "auto":
         names = []
         h, w, _ = img_arr.shape
-        for point in [[0, 0], [h - 1, 0], [0, w - 1], [h - 1, w - 1]]:
-            name = get_hsv_name(img_arr[point[0], point[1]], color_ranges)
-            names.append(name)
-        name = list(set(names))
-        if len(name) > 1:
-            raise Exception("Colors at four corners are different, failed to get color automatically.Please specify a color name. names:{}".format(names))
-        else:
-            print ("Using color-{}".format(name[0]))
-            tmp_color = color_ranges.get(name[0])
-            assert tmp_color is not None, 'no color named {}'.format(name)
-            edge_color = tmp_color
+        block_size_w = min(block_size, w//2)
+        block_size_h = min(block_size, h//2)
+        for start_point in [[0, 0], [h - 1 - block_size_h, 0], [0, w - 1 - block_size_w], [h - 1 - block_size_h, w - 1 - block_size_w]]:
+            for i in range(block_size_h):
+                for j in range(block_size_w):
+                    point = [start_point[0] + i, start_point[1] + j]
+                    name = get_hsv_name(img_arr[point[0], point[1]], color_ranges)
+                    names.append(name)
+        name_cnts = Counter(names)
+        print ("edge color counts: {}".format(name_cnts))
+        max_k = None
+        max_v = 0
+        for k, v in name_cnts.items():
+            if v > max_v:
+                max_k = k
+                max_v = v
+        print ("Using color-{}".format(max_k))
+        tmp_color = color_ranges.get(max_k)
+        assert tmp_color is not None, 'no color named {}'.format(name)
+        edge_color = tmp_color
     else:
         print ("Using specified color-{}".format(edge_color))
         tmp_color = color_ranges.get(edge_color)
@@ -175,7 +188,7 @@ def save_image(save_path, img_arr, size, args):
 
 
 if __name__ == '__main__':
-    # python3 codes/crop_image_by_content.py --input_image ./data/1.png --output_image_dir ./results/images/1/ --edge_color Black
+    # python3 codes/crop_image_by_color.py --input_image ./data/1.png --output_image_dir ./results/images/1/ --edge_color Black
     args = parser()
     img_arr = cv2.imread(args.input_image)
     basename = ".".join(os.path.basename(args.input_image).split(".")[:-1])
