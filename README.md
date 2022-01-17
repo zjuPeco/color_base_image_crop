@@ -25,7 +25,7 @@ Commands:
 Just input the video and give an output path.
 
 ```
-python3 codes/crop_video_by_content.py --input_video ./data/1.mp4 --output_video ./results/videos/1.mp4
+python3 codes/crop_video_by_color.py --input_video ./data/1.mp4 --output_video ./results/videos/1.mp4
 ```
 
 <div align="center">
@@ -36,7 +36,7 @@ python3 codes/crop_video_by_content.py --input_video ./data/1.mp4 --output_video
 Resize the image and crop to the output size.
 
 ```
-python3 codes/crop_video_by_content.py --input_video ./data/1.mp4 --output_video ./results/videos/1_720x1080.mp4 --output_size 720x1080
+python3 codes/crop_video_by_color.py --input_video ./data/1.mp4 --output_video ./results/videos/1_720x1080.mp4 --output_size 720x1080
 ```
 
 <div align="center">
@@ -47,7 +47,7 @@ python3 codes/crop_video_by_content.py --input_video ./data/1.mp4 --output_video
 Resize the image and pad to the output size
 
 ```
-python3 codes/crop_video_by_content.py --input_video ./data/1.mp4 --output_video ./results/videos/1_720x1080_pad.mp4 --output_size 720x1080 --pad_mode outside
+python3 codes/crop_video_by_color.py --input_video ./data/1.mp4 --output_video ./results/videos/1_720x1080_pad.mp4 --output_size 720x1080 --pad_mode outside
 ```
 
 <div align="center">
@@ -72,7 +72,7 @@ Steps:
 Command:
 
 ```
-python3 codes/crop_image_by_content.py --input_image ./data/5.jpeg --output_image_dir ./results/images/5/
+python3 codes/crop_image_by_color.py --input_image ./data/5.jpeg --output_image_dir ./results/images/5/
 ```
 
 <div align="center">
